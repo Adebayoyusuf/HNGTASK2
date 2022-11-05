@@ -26,7 +26,7 @@ def after_request(response):
     response.headers.add('Access-Control-Allow-Headers', 'GET, POST, PATCH, DELETE, OPTIONS')
     return response
 
-@app.route("/enum", methods=["POST"])
+@app.route("/", methods=['GET', 'POST'])
 def calc():
     result = 0
     res = request.get_json()
@@ -54,6 +54,6 @@ def calc():
         "operation_type": Operator.value
     }), 200, {"content-type": "application/json"}
 
-    
+
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=8090, debug=True)
