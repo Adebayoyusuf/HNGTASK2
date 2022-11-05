@@ -1,4 +1,3 @@
-
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from enum import Enum
@@ -26,7 +25,7 @@ def after_request(response):
     response.headers.add('Access-Control-Allow-Headers', 'GET, POST, PATCH, DELETE, OPTIONS')
     return response
 
-@app.route("/", methods=['GET', 'POST'])
+@app.route("/enum", methods=["POST"])
 def calc():
     result = 0
     res = request.get_json()
@@ -56,4 +55,4 @@ def calc():
 
 
 if __name__ == "__main__":
-    app.run(host='127.0.0.1', port=8090, debug=True)
+    app.run(host='127.0.0.1', port=5000, debug=True)    
