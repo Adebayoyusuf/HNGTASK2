@@ -1,14 +1,15 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from enum import Enum
-import os
 from dotenv import load_dotenv
+dotenv_path = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(dotenv_path)
 
 
 app = Flask(__name__)
+cors = CORS(app)
 
-dotenv_path = os.path.abspath(os.path.dirname(__file__))
-load_dotenv(dotenv_path)
+
 
 
 class Operator(Enum):
@@ -16,14 +17,14 @@ class Operator(Enum):
     subtraction = "-"
     multiplication = "*"
 
-cors = CORS(app)
+
 @app.after_request
 def after_request(response):
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization')
     response.headers.add('Access-Control-Allow-Headers', 'GET, POST, PATCH, DELETE, OPTIONS')
     return response
 
-@app.route("/operations", methods=["POST"])
+@app.route("/enum", methods=["POST"])
 def calc():
     result = 0
     res = request.get_json()
