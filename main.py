@@ -1,57 +1,43 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-from enum import Enum
-from dotenv import load_dotenv
-dotenv_path = os.path.abspath(os.path.dirname(__file__))
-load_dotenv(dotenv_path)
 
+from flask import Flask, request, json, Response
+from flask_cors import CORS
 
 app = Flask(__name__)
-cors = CORS(app)
+CORS(app, resources={r"*": {"origins": "*"}})
 
 
+@app.route('/', methods=['POST'])
+def operation():
+    if request.method == 'POST':
+        operation = request.json["operation_type"]
+        x = request.json['x']
+        y = request.json['y']
+        slackUsername = 'offisial'
 
+        if operation == 'addition':
+            sum = x + y
+            data = { "slackUsername": slackUsername, "result": sum, "operation_type" : operation }
 
-class Operator(Enum):
-    addition = "+"
-    subtraction = "-"
-    multiplication = "*"
+            response = json.dumps(data, sort_keys=False)
+            return Response(response, mimetype='application/json')
 
+        elif operation == 'subtraction':
+            minus = x - y
+            data = { "slackUsername": slackUsername, "result": minus, "operation_type" : operation }
 
-@app.after_request
-def after_request(response):
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-    response.headers.add('Access-Control-Allow-Headers', 'GET, POST, PATCH, DELETE, OPTIONS')
-    return response
+            response = json.dumps(data, sort_keys=False)
+            return Response(response, mimetype='application/json')
 
-@app.route("/enum", methods=["POST"])
-def calc():
-    result = 0
-    res = request.get_json()
-    operation_type = res.get("operation_type")
-    x = res["x"]
-    y = res.get("y")
+        elif operation == 'multiplication':
+            times = x * y
+            data = { "slackUsername": slackUsername, "result": times, "operation_type" : operation }
 
-    # check if any of the string occurs in operation_type
-    if any(x in operation_type for x in ["subtraction", "subtract", "minus", "difference"]):  
-        result = x - y
-        Operator.value = "subtraction"
-
-    elif any(x in operation_type for x in ["addition", "add", "plus", "join"]):
-        result = x + y
-        Operator.value = "addition"
-
-    elif any(x in operation_type for x in ["multiplication" , "times", "multiply", "product"]):
-        result = x * y
-        Operator.value = "multiplication"
-
-
-    return jsonify({
-        "slackUsername": "offisial",
-        "result": result,
-        "operation_type": Operator.value
-    }), 200, {"content-type": "application/json"}
-
+            response = json.dumps(data, sort_keys=False)
+            return Response(response, mimetype='application/json')
+        else:
+            return {"response": "Operation must be either addition, multiplication or Subtration"}
+    
+    return "error error error"
 
 
 if __name__ == "__main__":
